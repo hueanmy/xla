@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
     Mat centers;
 
     const int cluster = 5;
-    kmeans(points, cluster, clusters, cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 10, 1.0), 1, KMEANS_PP_CENTERS, centers);
+    kmeans(points, cluster, clusters, cvTermCriteria(CV_TERMCRIT_EPS |
+        CV_TERMCRIT_ITER, 10, 1.0), 1, KMEANS_PP_CENTERS, centers);
 
     MatIterator_<Vec3b> itd = im2.begin<Vec3b>(),itd_end = im2.end<Vec3b>();
     for (int i = 0; itd != itd_end; ++itd, ++i) {
