@@ -1,3 +1,12 @@
+//phuong phap tim bie/phat hien canh: Canny: tot nhat
+//muc tieu: - toc do sai so thap
+//	    - cac diem o tren canh la dung
+//	    - xoa bo cac diem thua tren canh
+//cac buoc thuc hien:
+//	    - Dung mat na gauss lam tron anh
+//	    - tinh dao ham cap 1 va anh goc pha: M(x,y) va &(x,y)
+//	    - xoa nhung dinh nho
+//	    - dung nguong kep va lien thong de lay lai nhung dinh bi dut
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include <stdlib.h>

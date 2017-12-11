@@ -1,3 +1,9 @@
+// Loai bo nhieu xung/nhieu muoi tieu
+// bo loc thong thap: lam tron anh
+// Thuc hien: 
+// 	- lay so lieu vao tung cua so 3x3.
+// 	- tao mang 1 chieu, sap tang dan va phan tu f(x,y) duoc thay bang phan tu
+// 	chinh giua.
 // For blurring and smoothing image
 #include<iostream>
 #include<opencv2/imgproc/imgproc.hpp>
