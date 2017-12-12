@@ -43,7 +43,7 @@ int main(int argc, char** argv){
   Mat kmeanImage = kmean(contrastImage);
   cin.get();
 
-  cout << "|4. HAU XU LY BANG CAC PHEP TOAN MORPHOLOGY:                |" << endl;
+  cout << "|4. HAU XU LY MORPHOLOGY: Closing, Openning                 |" << endl;
   waitKey(0);
 
   Mat morphologyImage = morphology_operations(kmeanImage);
@@ -79,7 +79,7 @@ Mat histogram(Mat imageSrc) {
 /*HAM LAM TRON ANH BY GAUSS FILTER*/
 Mat gaussianBlur (Mat imageSrc) {
   Mat blurredImage;
-  GaussianBlur(imageSrc, blurredImage, Size( 9, 9 ), 1.0);
+  GaussianBlur(imageSrc, blurredImage, Size( 9, 9 ), 1.0);  //size(9,9): kich thuoc mat na duoc su dung
   imshow("Blurred Image" , blurredImage);
   cout << "| * GAUSS FILTER: loai bo nhieu tren anh                    |" << endl;
   waitKey(0);
@@ -112,17 +112,21 @@ Mat kmean (Mat imageSrc) {
 }
 
 Mat morphology_operations (Mat imageSrc) {
-  int morph_size = 2;
+  int morph_size = 1;
   Mat element = getStructuringElement( MORPH_RECT, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
   cout<<element;
 
   Mat morphologyImage; // result matrix
     // Apply the specified morphology operation
-  for (int i=1;i<10;i++){
-    morphologyEx( imageSrc, morphologyImage, MORPH_TOPHAT, element, Point(-1,-1), i );
-    //morphologyEx( src, dst, MORPH_TOPHAT, element ); // here iteration=1
-    imshow("morphologyImage", morphologyImage);
-    waitKey(0);
-    }
+  // for (int i=1;i<10;i++){
+  //   morphologyEx( imageSrc, morphologyImage, MORPH_OPEN, element, Point(-1,-1), i );
+  //   morphologyEx( imageSrc, morphologyImage, MORPH_CLOSE, element, Point(-1,-1), i );
+  //   //morphologyEx( src, dst, MORPH_TOPHAT, element ); // here iteration=1
+  //   }
+  morphologyEx( imageSrc, morphologyImage, MORPH_OPEN, element);
+  morphologyEx( imageSrc, morphologyImage, MORPH_CLOSE, element);
+  // morphologyEx( imageSrc, morphologyImage, MORPH_GRADIENT, element);
+  imshow("morphologyImage", morphologyImage);
+  waitKey(0);
   return morphologyImage;
 }
