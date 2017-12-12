@@ -11,6 +11,15 @@ int selection = 0;
 int k = 0;
 void nhanchap(Mat image, int kernel_size);
 void canny();
+void gaussian();
+void histogramEq_for_color_image();
+void histogramEq_for_gray_image();
+void kmeans();
+void watershared();
+void laplacian();
+void morphology();
+void dft();
+void eroding_dilating();
 void exit();
 
 int main(int argc, char** argv) {

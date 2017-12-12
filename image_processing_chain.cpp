@@ -10,6 +10,7 @@ using namespace cv;
 Mat histogram(Mat imageSrc);
 Mat gaussianBlur (Mat imageSrc);
 Mat kmean (Mat imageSrc);
+Mat morphology_operations (Mat imageSrc);
 
 /*HAM CHINH*/
 int main(int argc, char** argv){
@@ -42,9 +43,18 @@ int main(int argc, char** argv){
   Mat kmeanImage = kmean(contrastImage);
   cin.get();
 
-  cout << "|4. HAU XU LY                                               |" << endl;
+  cout << "|4. HAU XU LY BANG CAC PHEP TOAN MORPHOLOGY:                |" << endl;
   waitKey(0);
 
+  Mat morphologyImage = morphology_operations(kmeanImage);
+  cin.get();
+  waitKey(0);
+
+  cout << "|KET QUA CHUOI XU LY                                        |" << endl;
+  imshow("Result of proccessing image chain", morphologyImage);
+  waitKey(0);
+
+  cout << "|********************* HEN GAP LAI *************************|" << endl;
 }
 
 /*HAM TANG CUONG DO TUONG PHAN CUA ANH BY EQUALIZE HISTOGRAM FOR COLOR IMAGE*/
@@ -99,4 +109,20 @@ Mat kmean (Mat imageSrc) {
     cout << "| * KMEANS: Phan vung anh                                   |" << endl;
     waitKey(0);
     return kmeanImage;
+}
+
+Mat morphology_operations (Mat imageSrc) {
+  int morph_size = 2;
+  Mat element = getStructuringElement( MORPH_RECT, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
+  cout<<element;
+
+  Mat morphologyImage; // result matrix
+    // Apply the specified morphology operation
+  for (int i=1;i<10;i++){
+    morphologyEx( imageSrc, morphologyImage, MORPH_TOPHAT, element, Point(-1,-1), i );
+    //morphologyEx( src, dst, MORPH_TOPHAT, element ); // here iteration=1
+    imshow("morphologyImage", morphologyImage);
+    waitKey(0);
+    }
+  return morphologyImage;
 }
