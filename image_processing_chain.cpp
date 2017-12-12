@@ -7,10 +7,10 @@
 using namespace std;
 using namespace cv;
 
-Mat histogram(Mat imageSrc);
-Mat gaussianBlur (Mat imageSrc);
-Mat kmean (Mat imageSrc);
-Mat morphology_operations (Mat imageSrc);
+Mat histogram(Mat imageInput);
+Mat gaussianBlur (Mat imageInput);
+Mat kmean (Mat imageInput);
+Mat morphology_operations (Mat imageInput);
 
 /*HAM CHINH*/
 int main(int argc, char** argv){
@@ -58,9 +58,9 @@ int main(int argc, char** argv){
 }
 
 /*HAM TANG CUONG DO TUONG PHAN CUA ANH BY EQUALIZE HISTOGRAM FOR COLOR IMAGE*/
-Mat histogram(Mat imageSrc) {
+Mat histogram(Mat imageInput) {
   Mat imageHsv, contrastImage;
-  cvtColor(imageSrc, imageHsv, CV_BGR2HSV);
+  cvtColor(imageInput, imageHsv, CV_BGR2HSV);
   vector<Mat> hsvChannels;
   // Tách imageHsv thành 3 kênh màu
   split(imageHsv, hsvChannels);
@@ -77,9 +77,9 @@ Mat histogram(Mat imageSrc) {
 }
 
 /*HAM LAM TRON ANH BY GAUSS FILTER*/
-Mat gaussianBlur (Mat imageSrc) {
+Mat gaussianBlur (Mat imageInput) {
   Mat blurredImage;
-  GaussianBlur(imageSrc, blurredImage, Size( 9, 9 ), 1.0);  //size(9,9): kich thuoc mat na duoc su dung
+  GaussianBlur(imageInput, blurredImage, Size( 9, 9 ), 1.0);  //size(9,9): kich thuoc mat na duoc su dung
   imshow("Blurred Image" , blurredImage);
   cout << "| * GAUSS FILTER: loai bo nhieu tren anh                    |" << endl;
   waitKey(0);
@@ -88,15 +88,28 @@ Mat gaussianBlur (Mat imageSrc) {
 
 /*HAM PHAN VUNG ANH BY KMEANS*/
 
-Mat kmean (Mat imageSrc) {
-  Mat kmeanImage(imageSrc.size(), imageSrc.type());
+Mat kmean (Mat imageInput) {
+  Mat kmeanImage(imageInput.size(), imageInput.type());
   Mat points;
-  imageSrc.convertTo(points, CV_32FC3);
-  points = points.reshape(3, imageSrc.rows*imageSrc.cols);
+  imageInput.convertTo(points, CV_32FC3);
+  points = points.reshape(3, imageInput.rows*imageInput.cols);
   Mat_<int> clusters(points.size(), CV_32SC1);
   Mat centers;
 
-  const int cluster = 5;
+  int cluster;
+  cout << "Enter cluster: \t";
+  cin >> cluster;
+  /*
+    points:
+    cluster: so nhom yeu cau tai thoi diem cuoi cung.
+    cvTermCriteria : Đây là tiêu chí chấm dứt vòng lặp. Khi tiêu chí này được thỏa mãn, thuật toán sẽ dừng vòng lặp. Trên thực tế, nó phải là một nhóm 3 thông số (type, max_iter, epsilon):
+      3.a - loại tiêu chí chấm dứt: Nó có 3 lá cờ như sau:
+          cv2.TERM_CRITERIA_EPS - ngăn sự lặp lại thuật toán nếu đạt được độ chính xác nhất định - epsilon đạt được.
+          cv2.TERM_CRITERIA_MAX_ITER - dừng thuật toán sau khi số lượng nhất định được lặp đi lặp lại
+          cv2.TERM_CRITERIA_EPS max_iter + cv2.TERM_CRITERIA_MAX_ITER - ngăn chặn sự lặp đi lặp lại khi một trong các điều kiện trên nó được đáp ứng
+      3.b - max_iter - Một số nguyên xác định số lượng tối đa vòng lặp.
+      3.c - Độ chính xác - epsilon
+  */
   kmeans(points, cluster, clusters, cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 10, 1.0), 1, KMEANS_PP_CENTERS, centers);
   MatIterator_<Vec3b> itd = kmeanImage.begin<Vec3b>(),itd_end = kmeanImage.end<Vec3b>();
   for (int i = 0; itd != itd_end; ++itd, ++i) {
@@ -111,21 +124,21 @@ Mat kmean (Mat imageSrc) {
     return kmeanImage;
 }
 
-Mat morphology_operations (Mat imageSrc) {
-  int morph_size = 1;
+Mat morphology_operations (Mat imageInput) {
+  int morph_size = 0;
   Mat element = getStructuringElement( MORPH_RECT, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
   cout<<element;
 
   Mat morphologyImage; // result matrix
     // Apply the specified morphology operation
   // for (int i=1;i<10;i++){
-  //   morphologyEx( imageSrc, morphologyImage, MORPH_OPEN, element, Point(-1,-1), i );
-  //   morphologyEx( imageSrc, morphologyImage, MORPH_CLOSE, element, Point(-1,-1), i );
+  //   morphologyEx( imageInput, morphologyImage, MORPH_OPEN, element, Point(-1,-1), i );
+  //   morphologyEx( imageInput, morphologyImage, MORPH_CLOSE, element, Point(-1,-1), i );
   //   //morphologyEx( src, dst, MORPH_TOPHAT, element ); // here iteration=1
   //   }
-  morphologyEx( imageSrc, morphologyImage, MORPH_OPEN, element);
-  morphologyEx( imageSrc, morphologyImage, MORPH_CLOSE, element);
-  // morphologyEx( imageSrc, morphologyImage, MORPH_GRADIENT, element);
+  morphologyEx( imageInput, morphologyImage, MORPH_OPEN, element);
+  morphologyEx( imageInput, morphologyImage, MORPH_CLOSE, element);
+  // morphologyEx( imageInput, morphologyImage, MORPH_GRADIENT, element);
   imshow("morphologyImage", morphologyImage);
   waitKey(0);
   return morphologyImage;
