@@ -14,7 +14,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 using namespace std;
-using namespace cv;;
+using namespace cv;
 
 Mat gaussianBlur (Mat imageInput);
 Mat medianFilter(Mat image, int kernel_size);
