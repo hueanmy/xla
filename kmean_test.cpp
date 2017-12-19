@@ -18,7 +18,10 @@ int main(int argc, char *argv[])
     Mat_<int> clusters(points.size(), CV_32SC1);
     Mat centers;
 
-    const int cluster = 5;
+    int cluster;
+    count << "Enter cluster: \t";
+    cin >> cluster;
+
     kmeans(points, cluster, clusters, cvTermCriteria(CV_TERMCRIT_EPS |
         CV_TERMCRIT_ITER, 10, 1.0), 1, KMEANS_PP_CENTERS, centers);
 

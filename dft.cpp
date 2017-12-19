@@ -19,7 +19,7 @@ static void help(void)
 int main(int argc, char ** argv)
 {
     help();
-    const char* filename = argc >=2 ? argv[1] : "../data/lena.jpg";
+    const char* filename = argc >=2 ? argv[1] : "test.jpg";
     Mat I = imread(filename, IMREAD_GRAYSCALE);
     if( I.empty()){
         cout << "Error opening image" << endl;

@@ -41,22 +41,23 @@ int main(int argc, char** argv) {
 
   while (k == 0) {
     selection = 0;
-    cout << " Please choose from the following options: \n";
-    cout << " 1. Increasing Constrast.\n";
-    cout << " 2. Convolution.\n";
-    cout << " 3. Smoothing image.\n";
-    cout << " 4. Edge detection.\n";
-    cout << " 5. Discrete Fourier Transform.\n";
-    cout << " 6. Image Segmentation.\n";
-    cout << " 7. Morphology.\n";
-    cout << " 8. Resize.\n";
-    cout << " 9. Exit.\n";
+    cout << "|____________________ THU NGHIEM CAC PHUONG PHAP XU LY ANH __________________|\n" ;
+    cout << "|Please choose from the following options:                                   |\n";
+    cout << "|1. Increasing Constrast.                                                    |\n";
+    cout << "|2. Convolution.                                                             |\n";
+    cout << "|3. Smoothing image.                                                         |\n";
+    cout << "|4. Edge detection.                                                          |\n";
+    cout << "|5. Discrete Fourier Transform.                                              |\n";
+    cout << "|6. Image Segmentation.                                                      |\n";
+    cout << "|7. Morphology.                                                              |\n";
+    cout << "|8. Resize.                                                                  |\n";
+    cout << "|9. Exit.                                                                    |\n";
     cout << "Your selection:\t";
     cin >> selection;
 
   switch (selection) {
     case 1: {
-      cout << "Chon phuong phap can lam" << endl;
+      cout << "Chon phuong phap can lam " << endl;
       cout << "a. Histogram Equalize (for grayscale image)" << endl;
       cout << "b. Histogram Equalize (for color image)" << endl;
       cout << "Your selection: " << endl;
@@ -201,8 +202,8 @@ void nhanchap(Mat image, int kernel_size) {
     Ap dung nhan chap anh voi ma tran do
   */
   filter2D(image, dst, -1 , kernel, Point( -1, -1 ), 0, BORDER_DEFAULT );
-  namedWindow( "nhan chap day ahihi", CV_WINDOW_AUTOSIZE );
-  imshow( "nhan chap day ahihi", dst );
+  namedWindow( "nhan chap", CV_WINDOW_AUTOSIZE );
+  imshow( "nhanchap", dst );
   waitKey(0);
 }
 
@@ -241,7 +242,7 @@ void histogrameq_for_colorImg(Mat image){
   // Chuyển đổi HSV sang RGB để hiển thị
   cvtColor(imageHsv, imageDst, CV_HSV2BGR);
 
-  imshow("imageSrc", image);
+  // imshow("imageSrc", image);
 
   imshow("imageDst", imageDst);
 
@@ -278,8 +279,8 @@ void laplace(Mat image){
   /*
     Ap dung GaussianBlur de khu nhieu
     src: anh dau vao
-    src#2: anh dau ra
-    Size: kich co cua ma tran mat na
+    src#2: anh dau ra.
+    Size: kich co cua ma tran mat na sobel.
   */
   GaussianBlur( image, image, Size(3,3), 0, 0, BORDER_DEFAULT );
   /*
@@ -321,6 +322,10 @@ void sobel(Mat image){
 
 void canny(Mat image, int kernel_size) {
   Mat canny_image;
+  /*Bước 1: dùng mặt nạ Gauss làm trơn ảnh.
+  Bước 2: tính ảnh đạo hàm cấp 1 và ảnh góc pha: M(x,y) và α(x,y).
+  Bước 3: xóa những đỉnh nhỏ.
+  Bước 4: dùng ngưỡng kép và phân tích liên thông để nối các cạnh bị đứt.*/
   Canny(image, canny_image, 50, 200, kernel_size);
   imshow("Canny", canny_image);
   waitKey(0);
@@ -395,6 +400,17 @@ void dft(Mat image) {
 }
 
 void kmeans(Mat image) {
+  /*/*
+    points:
+    cluster: so nhom yeu cau tai thoi diem cuoi cung.
+    cvTermCriteria : Đây là tiêu chí chấm dứt vòng lặp. Khi tiêu chí này được thỏa mãn, thuật toán sẽ dừng vòng lặp. Trên thực tế, nó phải là một nhóm 3 thông số (type, max_iter, epsilon):
+      3.a - loại tiêu chí chấm dứt: Nó có 3 lá cờ như sau:
+          cv2.TERM_CRITERIA_EPS - ngăn sự lặp lại thuật toán nếu đạt được độ chính xác nhất định - epsilon đạt được.
+          cv2.TERM_CRITERIA_MAX_ITER - dừng thuật toán sau khi số lượng nhất định được lặp đi lặp lại
+          cv2.TERM_CRITERIA_EPS max_iter + cv2.TERM_CRITERIA_MAX_ITER - ngăn chặn sự lặp đi lặp lại khi một trong các điều kiện trên nó được đáp ứng
+      3.b - max_iter - Một số nguyên xác định số lượng tối đa vòng lặp.
+      3.c - Độ chính xác - epsilon
+  */
   Mat image2(image.size(), image.type());
 
   Mat points;
@@ -404,7 +420,10 @@ void kmeans(Mat image) {
   Mat_<int> clusters(points.size(), CV_32SC1);
   Mat centers;
 
-  const int cluster = 5;
+  int cluster;
+  cout << "| Enter cluster: \t";
+  cin >> cluster;
+
   kmeans(points, cluster, clusters, cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 10, 1.0), 1, KMEANS_PP_CENTERS, centers);
 
   MatIterator_<Vec3b> itd = image2.begin<Vec3b>(),itd_end = image2.end<Vec3b>();
@@ -414,7 +433,6 @@ void kmeans(Mat image) {
       (*itd)[1] = saturate_cast<uchar>(color[1]);
       (*itd)[2] = saturate_cast<uchar>(color[2]);
   }
-  imshow("Input", image);
   imshow("Output", image2);
   waitKey(0);
 }
