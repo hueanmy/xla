@@ -36,6 +36,7 @@ int main(int argc, char** argv){
     cout<<"Error loading image" << "\n";
     return -1;
   }
+  imshow("anh goc", image);
   waitKey(0);
 
   cout << "|2. TIEN XU LY                                              |" << endl;
@@ -83,6 +84,7 @@ int main(int argc, char** argv){
   cin.get();
 
   cout << "|KET QUA CHUOI XU LY                                        |" << endl;
+  imshow("Anh goc", image);
   imshow("Result of proccessing image chain", morphologyImage);
   waitKey(0);
 
@@ -103,6 +105,7 @@ Mat histogram(Mat imageInput) {
   // Chuyển đổi HSV sang RGB để hiển thị
   cvtColor(imageHsv, contrastImage, CV_HSV2BGR);
   cout << "| * EQUALIZE HISTOGRAM: tang cuong do tuong phan cua anh mau|" << endl;
+  imshow("anh sau khi loc nhieu", imageInput);
   imshow("contrastImage", contrastImage);
   waitKey(0);
   return contrastImage;
@@ -111,6 +114,7 @@ Mat histogram(Mat imageInput) {
 Mat resize(Mat image, int width, int height) {
   Mat imageDst;
   resize(image, imageDst, cv::Size(), width, height);
+  imshow("Anh sau tang cuong va loc nhieu", image);
   imshow("resize image1", imageDst);
   waitKey(0);
   return imageDst;
@@ -121,6 +125,7 @@ Mat gaussianBlur (Mat imageInput) {
   Mat blurredImage;
   /**/
   GaussianBlur(imageInput, blurredImage, Size( 9, 9 ), 1.0);  //size(9,9): kich thuoc mat na duoc su dung, w,h la nhung hang xom duoc chon
+  imshow("Anh goc", imageInput);
   imshow("Blurred Image" , blurredImage);
   cout << "| * GAUSS FILTER: loai bo nhieu tren anh                    |" << endl;
   waitKey(0);
@@ -130,6 +135,7 @@ Mat gaussianBlur (Mat imageInput) {
 Mat medianFilter(Mat image, int kernel_size){
   Mat imageDst;
   medianBlur( image, imageDst, kernel_size );
+  imshow("Anh sau khi gauss", image);
   imshow( "Median filter", imageDst );
   waitKey(0);
   return imageDst;
@@ -141,7 +147,7 @@ Mat kmean (Mat imageInput) {
   Mat kmeanImage(imageInput.size(), imageInput.type());
   Mat points;
   imageInput.convertTo(points, CV_32FC3);
-  points = points.reshape(3, imageInput.rows*imageInput.cols); /*o day cho mat phang 3D*/
+  points = points.reshape(3, imageInput.rows*imageInput.cols); /*o day cho mat phang*/
   Mat_<int> clusters(points.size(), CV_32SC1);
   Mat centers;
 
@@ -167,7 +173,7 @@ Mat kmean (Mat imageInput) {
       KMEANS_RANDOM_CENTERS: chon diem trung tam ban dau bang random cho moi lan thu
       KMEANS_USE_INITIAL_LABELS:
   */
-  kmeans(points, cluster, clusters, cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 10, 1.0), 1, KMEANS_RANDOM_CENTERS, centers);
+  kmeans(points, cluster, clusters, cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 12, 1.0), 1, KMEANS_RANDOM_CENTERS, centers);
   /*thoả mãn một chuẩn mà chúng ta đã đưa ra từ trước. Ví du như là đạt đến số lần vòng lặp tối đa đã định nghĩa trước,
   hoặc là đạt được một chuẩn chính xác nào đó .v...
   Các điểm này sẽ thoả mãn tổng khoảng cách giữa dữ liệu test và trọng tâm tương ứng là nhỏ nhất.
@@ -179,6 +185,7 @@ Mat kmean (Mat imageInput) {
         (*itd)[1] = saturate_cast<uchar>(color[1]);
         (*itd)[2] = saturate_cast<uchar>(color[2]);
     } /*--> gan mau cho cac vung khac nhau*/
+    imshow("anh sau tien xu ly", imageInput);
     imshow("kmeanImage", kmeanImage);
     cout << "| * KMEANS: Phan vung anh                                   |" << endl;
     waitKey(0);
@@ -203,15 +210,17 @@ Mat morphology_operations (Mat imageInput) {
   Mat openingImage;
   // Apply the specified morphology operation
   morphologyEx( imageInput, openingImage, MORPH_OPEN, element);
-  /* dung de xoa nhieu
+  /* dung de xoa nhieu, lam tron
   co: erosion -> gian: dilation*/
+  imshow("anh sau khi phan vung", imageInput);
   imshow("openingImage", openingImage);
   cout << "\n| * Openning Image                                          |" << endl;
   waitKey(0);
   morphologyEx( openingImage, closingImage, MORPH_CLOSE, element);
-  /* dung de lap khe ho
+  /* dung de lap khe ho, lam do cac bien
   gianL dilation --> co: erosion
   */
+  imshow("openingImage", openingImage);
   imshow("closingImage", closingImage);
   cout << "| * Closing Image                                           |" << endl;
   waitKey(0);
